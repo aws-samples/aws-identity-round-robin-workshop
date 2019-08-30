@@ -1,4 +1,4 @@
-# Permission boundaries workshop <small> Clean-up phase</small>
+# Permission boundaries workshop <small> CLEAN-UP phase</small>
 
 It's now time to **Clean-up** the resources you created from the **Build** and **Verify** phases.
 

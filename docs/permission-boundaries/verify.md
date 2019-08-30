@@ -77,3 +77,5 @@ async function getKeys(params, keys){
 ## Task 4 <small>Investigate if you are able to do anything else</small>
 
 The final step is to determine if you can do anything else in the account. Can you impact any resources not owned by the web admins?
+
+### <small>[Click here to go to the CLEAN-UP phase](./cleanup.md)</small>

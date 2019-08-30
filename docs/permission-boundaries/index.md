@@ -11,11 +11,14 @@ Your customer has deployed a three tier web application in production. Different
  
 ## Agenda
 
-The round is broken down into a [**BUILD**](./build.md) phase followed by a [**VERIFY**](./verify.md) phase. 
+The round is broken down into a [**BUILD**](./build.md) phase followed by a [**VERIFY**](./verify.md) phase, with a [**CLEAN-UP**](./cleanup.md) phase at the end to remove any created resources.
 
 **BUILD** (60 min): First each team will carry out the activities involved in the **BUILD** phase where they will set up access for the web admins and properly lock down the account. Then each team will hand credentials for an IAM user in their account to another team to act in the **VERIFY** phase. The **VERIFY** phase lasts about 30 min.
 
 **VERIFY** (30 min): Each team will carry out the **VERIFY** activities as if they were part of the web admins team. The **VERIFY** activities will include validating that the requirements were set up correctly in the **BUILD** phase and also investigate if the web admins are able to take actions that they shouldn't be allowed to.
+
+**CLEAN-UP** (3 min): Each team will carry out the **CLEAN-UP** activities to remove any created resources.
+
 
 !!! info "Team or Individual Exercise"
 	This workshop can be done as a team exercise or individually. The instructions are written with assumption that you are working as part of a team but you could just as easily do the steps below on your own. If done as part of an AWS sponsored event then you'll be split into teams of around 4-6 people. Each team will do the **BUILD** phase and then hand off their accounts to another team. Then each team will do the **VERIFY** phase. 
