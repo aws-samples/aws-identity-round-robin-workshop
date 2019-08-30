@@ -142,7 +142,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
 
 >	ii. Create log streams and put logs
 
->	iii. List the objects from the S3 bucket name that starts with `"web-admins-"` and ends in `"-data"`
+>	iii. List the objects from the S3 bucket name that starts with `"webadmins-"` and ends in `"-data"`
 
 ### Walk Through: 
 
