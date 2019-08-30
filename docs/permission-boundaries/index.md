@@ -43,7 +43,7 @@ There are many teams working in this AWS account, including the web admins and t
 
 1. IAM policies and roles created by the web admins 
 2. Lambda functions created by the web admins
-3. S3 buckets: The web admins are allowed access to the bucket that starts  with`"web-admins-"` and ends in `"-data"`
+3. S3 buckets: The web admins are allowed access to the bucket that starts  with`"webadmins-"` and ends in `"-data"`
 
 ## Presentation
 

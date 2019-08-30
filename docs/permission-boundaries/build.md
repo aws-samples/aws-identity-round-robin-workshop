@@ -168,7 +168,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "arn:aws:logs:us-east-2:ACCOUNT_ID:log-group:/aws/lambda/????:*"
+            "Resource": "arn:aws:logs:us-east-2:ACCOUNT_ID:log-group:/aws/lambda/*:*"
         },
         {
             "Sid": "AllowedS3GetObject",
@@ -176,7 +176,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Action": [
                 "s3:List*"
             ],
-            "Resource": "arn:aws:s3:::web-admins-ACCOUNT_ID-*"
+            "Resource": "arn:aws:s3:::webadmins-ACCOUNT_ID-data"
         }
     ]
 }
