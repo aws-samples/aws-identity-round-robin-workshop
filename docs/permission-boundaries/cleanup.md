@@ -28,4 +28,4 @@ To clean-up you need to do the following:
 ## Task 3 <small>Delete S3 Bucket</small>
 
 1. Browse to the [S3 console](https://console.aws.amazon.com/s3/home).
-2. Click **Buckets** on the left menu and delete the S3 bucket named **`webadmins-<Account_ID>-data`**.
+2. Click **Buckets** on the left menu and delete the S3 bucket named **`web-admins-<Account_ID>-data`**.

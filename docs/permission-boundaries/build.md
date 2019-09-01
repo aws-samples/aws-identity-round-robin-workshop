@@ -48,6 +48,12 @@ To setup your environment please expand one of the following drop-downs (dependi
 
 	This will bring you back to the CloudFormation console. You can refresh the page to see the stack starting to create. Before moving on, make sure the stack is in a **CREATE_COMPLETE**.
 
+## Task 0 <small>Create S3 Bucket</small>
+
+1. Browse to the [S3 console](https://console.aws.amazon.com/s3/home).
+2. Click **Buckets** on the left menu and create the S3 bucket named **`web-admins-<Account_ID>-data`**.
+3. Create some objects and/or folders within this bucket.
+
 ## Task 1 <small>Create an IAM user and an IAM policy with permission to create managed policies, IAM roles and Lambda functions</small>
 
 Build an IAM policy so that web admins can create customer managed policies, IAM roles and Lambda functions. They should only be able to edit the policies, roles and lambda functions they create. 
@@ -142,7 +148,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
 
 >	ii. Create log streams and put logs
 
->	iii. List the objects from the S3 bucket name that starts with `"webadmins-"` and ends in `"-data"`
+>	iii. List the objects from the S3 bucket name that starts with `"web-admins-"` and ends in `"-data"`
 
 ### Walk Through: 
 
@@ -176,7 +182,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Action": [
                 "s3:List*"
             ],
-            "Resource": "arn:aws:s3:::webadmins-ACCOUNT_ID-data"
+            "Resource": "arn:aws:s3:::web-admins-ACCOUNT_ID-data"
         }
     ]
 }
