@@ -29,3 +29,5 @@ To cleanup you need to do the following:
 
 1. Browse to the [S3 console](https://console.aws.amazon.com/s3/home).
 2. Click **Buckets** on the left menu and delete the S3 bucket named **`web-admins-<Account_ID>-data`**.
+
+	Replace **`<Account_ID>`** with the correct Account ID.

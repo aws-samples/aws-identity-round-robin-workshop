@@ -1,6 +1,6 @@
 # Permissions Boundaries Round <small>Build Phase</small>
 
-Below are a series of tasks to delegate permissions to the web admins. In these tasks you will be creating policies and testing them. It helps to divide the team into people doing the tasks and people testing things out. 
+Below are a series of tasks to delegate permissions to the web admins. In these tasks you will be creating policies and testing them. It helps to divide the team into people doing the tasks and people testing things out.
 
 ## Setup Instructions
 
@@ -48,18 +48,22 @@ To setup your environment please expand one of the following drop-downs (dependi
 
 	This will bring you back to the CloudFormation console. You can refresh the page to see the stack starting to create. Before moving on, make sure the stack is in a **CREATE_COMPLETE**.
 
+!!! Attention
+	As you use the provided IAM policy hints in each task, keep in mind where you need to replace **`<Account_ID>`** with the correct Account ID, where you need to correctly use the resource restrictions and also where you need to change the region. Missing any of these items can result in problems and errors like **"An error occurred (MalformedPolicyDocument) when calling the CreatePolicy operation: The policy failed legacy parsing**".
+
 ## Task 0 <small>Create S3 Bucket</small>
 
 1. Browse to the [S3 console](https://console.aws.amazon.com/s3/home).
 2. Click **Buckets** on the left menu and create the S3 bucket named **`web-admins-<Account_ID>-data`**.
+
+	Replace **`<Account_ID>`** with the correct Account ID.
+
 3. Create some objects and/or folders within this bucket.
 
 ## Task 1 <small>Create an IAM user and an IAM policy with permission to create managed policies, IAM roles and Lambda functions</small>
 
 Build an IAM policy so that web admins can create customer managed policies, IAM roles and Lambda functions. They should only be able to edit the policies, roles and lambda functions they create. 
 
-!!! Attention
-	As you use the provided IAM policy hints in each task, keep in mind where you need to add the account ID, correctly use the resource restrictions and change the region specified if needed (although if you are taking this as part of an AWS event, please use the Ohio region or us-east-2.) Missing any of these items can cause issues with your policies
 
 ### Walk Through
 
@@ -87,7 +91,7 @@ Build an IAM policy so that web admins can create customer managed policies, IAM
                 "iam:DeletePolicyVersion",
                 "iam:SetDefaultPolicyVersion"
             ],
-            "Resource": "arn:aws:iam::ACCOUNT_ID:policy/????"
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:policy/????"
         },
         {
             "Sid": "CreateRoles",
@@ -100,20 +104,20 @@ Build an IAM policy so that web admins can create customer managed policies, IAM
                 "iam:DetachRolePolicy"
             ],
             "Resource": [
-                "arn:aws:iam::ACCOUNT_ID:role/????"
+                "arn:aws:iam::<ACCOUNT_ID>:role/????"
             ]
         },
         {
             "Sid": "LambdaFullAccesswithResourceRestrictions",
             "Effect": "Allow",
             "Action": "lambda:*",
-            "Resource": "arn:aws:lambda:us-east-2:ACCOUNT_ID:function:????"
+            "Resource": "arn:aws:lambda:*:<ACCOUNT_ID>:function:????"
         },
         {
             "Sid": "PassRoletoLambda",
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "arn:aws:iam::ACCOUNT_ID:role/????",
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/????",
             "Condition": {
                 "StringLikeIfExists": {
                     "iam:PassedToService": "lambda.amazonaws.com"
@@ -123,7 +127,7 @@ Build an IAM policy so that web admins can create customer managed policies, IAM
         {
             "Sid": "AdditionalPermissionsforLambda",
             "Effect": "Allow",
-            "Action": ["kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents"],
+            "Action": [ "kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents" ],
             "Resource": "*"
         }
     ]
@@ -155,7 +159,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
 * Create a new IAM policy that will act as the permissions boundary for the web admins.
 
 !!! hint
-	[IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html): The question marks **`????`** in the resource element below should be replaced with something that could act as a resource restriction. 
+	[IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html): The question marks **`????`** in the resource element below should be replaced with something that could act as either a naming or pathing resource restriction.
 
 ``` json
 {
@@ -165,7 +169,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Sid": "CreateLogGroup",
             "Effect": "Allow",
             "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:us-east-2:ACCOUNT_ID:*"
+            "Resource": "arn:aws:logs:*:<ACCOUNT_ID>:*"
         },
         {
             "Sid": "CreateLogStreamandEvents",
@@ -174,7 +178,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "arn:aws:logs:us-east-2:ACCOUNT_ID:log-group:/aws/lambda/*:*"
+            "Resource": "arn:aws:logs:*:<ACCOUNT_ID>:log-group:/aws/lambda/*:*"
         },
         {
             "Sid": "AllowedS3GetObject",
@@ -182,7 +186,7 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Action": [
                 "s3:List*"
             ],
-            "Resource": "arn:aws:s3:::web-admins-ACCOUNT_ID-data"
+            "Resource": "arn:aws:s3:::web-admins-<ACCOUNT_ID>-data"
         }
     ]
 }
@@ -204,7 +208,7 @@ Create a policy that references the permissions boundary we just created. It is 
 Note that the policy below contains two additional sections (the last two sections) that we did not address in the earlier tasks. The additions are focused on denying the ability to change or delete the permission policy and the permissions boundary. 
 
 !!! hint 
-	[permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html): The question marks **`????`** in the resource elements below should be replaced with something that could act as a resource restriction. 
+	[permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html): The question marks **`????`** in the resource element below should be replaced with something that could act as either a naming or pathing resource restriction.
 
 ``` json
 {
@@ -220,7 +224,7 @@ Note that the policy below contains two additional sections (the last two sectio
                 "iam:DeletePolicyVersion",
                 "iam:SetDefaultPolicyVersion"
             ],
-            "Resource": "arn:aws:iam::ACCOUNT_ID:policy/????"
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:policy/????"
         },
         {
         	  "Sid": "RoleandPolicyActionswithnoPermissionBoundarySupport",
@@ -230,7 +234,7 @@ Note that the policy below contains two additional sections (the last two sectio
                 	"iam:DeleteRole"
             ],
             "Resource": [
-                "arn:aws:iam::ACCOUNT_ID:role/????"
+                "arn:aws:iam::<ACCOUNT_ID>:role/????"
             ]
         },
         {
@@ -242,23 +246,23 @@ Note that the policy below contains two additional sections (the last two sectio
                 "iam:DetachRolePolicy"
             ],
             "Resource": [
-                "arn:aws:iam::ACCOUNT_ID:role/????"
+                "arn:aws:iam::<ACCOUNT_ID>:role/????"
             ],
             "Condition": {"StringEquals": 
-                {"iam:PermissionsBoundary": "arn:aws:iam::ACCOUNT_ID:policy/webadminpermissionboundary"}
+                { "iam:PermissionsBoundary": "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionboundary" }
             }
         },
         {
             "Sid": "LambdaFullAccesswithResourceRestrictions",
             "Effect": "Allow",
             "Action": "lambda:*",
-            "Resource": "arn:aws:lambda:us-east-2:ACCOUNT_ID:function:????"
+            "Resource": "arn:aws:lambda:*:<ACCOUNT_ID>:function:????"
         },
         {
             "Sid": "PassRoletoLambda",
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "arn:aws:iam::ACCOUNT_ID:role/????",
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/????",
             "Condition": {
                 "StringLikeIfExists": {
                     "iam:PassedToService": "lambda.amazonaws.com"
@@ -268,7 +272,7 @@ Note that the policy below contains two additional sections (the last two sectio
         {
             "Sid": "AdditionalPermissionsforLambda",
             "Effect": "Allow",
-            "Action": 	["kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents"],
+            "Action": 	[ "kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents" ],
             "Resource": "*"
         },
         {
@@ -281,8 +285,8 @@ Note that the policy below contains two additional sections (the last two sectio
                 "iam:SetDefaultPolicyVersion"
             ],
             "Resource": [
-                "arn:aws:iam::ACCOUNT_ID:policy/webadminpermissionboundary",
-                "arn:aws:iam::ACCOUNT_ID:policy/webadminpermissionpolicy"
+                "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionboundary",
+                "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionpolicy"
             ]
         },
         {

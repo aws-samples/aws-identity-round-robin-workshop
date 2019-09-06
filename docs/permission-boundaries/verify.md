@@ -47,7 +47,7 @@ Application architecture: ![image1](./images/architecture.png)
 	
 ## Task 3 <small>Create a Lambda function</small>
 
-* Finally you will create a **Node.js 8.10** Lambda function using the code below and attach the IAM role you just created to it. You will need to replace `"WEB_ADMIN_BUCKET_NAME"` with the bucket from the account that begins with `"web-admins-"` and ends in `"-data"`
+* Finally you will create a **Node.js 8.10** Lambda function using the code below and attach the IAM role you just created to it. You will need to replace `"<WEB_ADMIN_BUCKET_NAME>"` with the bucket from the account that begins with `"web-admins-"` and ends in `"-data"`
 
 ``` node
 const AWS = require('aws-sdk');
@@ -56,7 +56,7 @@ const s3 = new AWS.S3();
 exports.handler = async (event) => {
   console.log('Loading function');
   const allKeys = [];
-  await getKeys({ Bucket: 'WEB_ADMIN_BUCKET_NAME' }, allKeys);
+  await getKeys({ Bucket: '<WEB_ADMIN_BUCKET_NAME>' }, allKeys);
   return allKeys;
 };
 
