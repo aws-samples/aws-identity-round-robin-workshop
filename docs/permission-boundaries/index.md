@@ -1,4 +1,4 @@
-# Permission boundaries round
+# Permission Boundaries Round
 
 Your customer has deployed a three tier web application in production. Different teams work on different aspects of the architecture but they don't always communicate well. Just recently the team responsible for the web front end set up a Lambda function that inadvertently impacted the application team's resources. The VP of Operations was furious. The VP has tasked you with setting up permissions for the web admins so that they can only impact their own resources while still being able to do their job. 
 
@@ -11,13 +11,13 @@ Your customer has deployed a three tier web application in production. Different
  
 ## Agenda
 
-The round is broken down into a [**BUILD**](./build.md) phase followed by a [**VERIFY**](./verify.md) phase, with a [**CLEAN-UP**](./cleanup.md) phase at the end to remove any created resources.
+The round is broken down into a [**BUILD**](./build.md) phase followed by a [**VERIFY**](./verify.md) phase, with a [**CLEANUP**](./cleanup.md) phase at the end to remove any created resources.
 
 **BUILD** (60 min): First each team will carry out the activities involved in the **BUILD** phase where they will set up access for the web admins and properly lock down the account. Then each team will hand credentials for an IAM user in their account to another team to act in the **VERIFY** phase. The **VERIFY** phase lasts about 30 min.
 
 **VERIFY** (30 min): Each team will carry out the **VERIFY** activities as if they were part of the web admins team. The **VERIFY** activities will include validating that the requirements were set up correctly in the **BUILD** phase and also investigate if the web admins are able to take actions that they shouldn't be allowed to.
 
-**CLEAN-UP** (3 min): Each team will carry out the **CLEAN-UP** activities to remove any created resources.
+**CLEANUP** (3 min): Each team will carry out the **CLEANUP** activities to remove any created resources.
 
 
 !!! info "Team or Individual Exercise"

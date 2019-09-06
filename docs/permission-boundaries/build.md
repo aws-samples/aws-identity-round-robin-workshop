@@ -1,4 +1,4 @@
-# Permissions boundaries round <small>Build Phase</small>
+# Permissions Boundaries Round <small>Build Phase</small>
 
 Below are a series of tasks to delegate permissions to the web admins. In these tasks you will be creating policies and testing them. It helps to divide the team into people doing the tasks and people testing things out. 
 

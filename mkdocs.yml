@@ -1,14 +1,15 @@
 # Project information
 
 site_name: Identity Round Robin
-site_short_name: Identity Round Robin
+#site_short_name: Identity Round Robin
 site_description: 'A hands-on workshop to learn about a variety of AWS identity topics.'
-site_author: 'aws-security-workshops@amazon.com'
-site_url: 'https://identity-round-robin.awssecworkshops.com/'
+site_author: 'jnv@amazon.com'
+#site_url: 'https://jeremyvincent.com/aws-identity-round-robin-workshop'
+site_url: 'https://jnv-aws-test-website/aws-identity-round-robin-workshop/'
 
 # Repository
-repo_name: 'aws-samples/aws-identity-round-robin-workshop'
-repo_url: 'https://github.com/aws-samples/aws-identity-round-robin-workshop'
+repo_name: 'jvincentnz/aws-identity-round-robin-workshop'
+repo_url: 'https://github.com/jvincentnz/aws-identity-round-robin-workshop'
 
 # Copyright
 copyright: '&copy; 2019, Amazon Web Services, Inc. or its affiliates. All rights reserved.'
@@ -58,6 +59,7 @@ nav:
     - 'Scenario': 'permission-boundaries/index.md'
     - 'Build Phase': 'permission-boundaries/build.md'
     - 'Verify Phase': 'permission-boundaries/verify.md'
+    - 'Cleanup Phase': 'permission-boundaries/cleanup.md'
   - 'Permissions Boundaries - Advanced':
     - 'Scenario': 'permission-boundaries-advanced/index.md'
     - 'Build Phase': 'permission-boundaries-advanced/build.md'

@@ -1,8 +1,8 @@
-# Permission boundaries workshop <small> CLEAN-UP phase</small>
+# Permission Boundaries Round <small>CLEANUP phase</small>
 
-It's now time to **Clean-up** the resources you created from the **Build** and **Verify** phases.
+It's now time to **Cleanup** the resources you created from the **Build** and **Verify** phases.
 
-To clean-up you need to do the following:
+To cleanup you need to do the following:
 
 1. Delete the Lambda functions
 2. Delete the IAM user

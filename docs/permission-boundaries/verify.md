@@ -1,4 +1,4 @@
-# Permission boundaries round <small>VERIFY phase</small>
+# Permission Boundaries Round <small>VERIFY phase</small>
 
 You are now in the **VERIFY** phase. It is time to put on the hat of the web admins and test out their access. 
 
@@ -78,4 +78,4 @@ async function getKeys(params, keys){
 
 The final step is to determine if you can do anything else in the account. Can you impact any resources not owned by the web admins?
 
-### <small>[Click here to go to the CLEAN-UP phase](./cleanup.md)</small>
+### <small>[Click here to go to the CLEANUP phase](./cleanup.md)</small>
