@@ -17,7 +17,7 @@ The round is broken down into a [**BUILD**](./build.md) phase followed by a [**V
 
 **VERIFY** (30 min): Each team will carry out the **VERIFY** activities as if they were part of the web admins team. The **VERIFY** activities will include validating that the requirements were set up correctly in the **BUILD** phase and also investigate if the web admins are able to take actions that they shouldn't be allowed to.
 
-**CLEANUP** (3 min): Each team will carry out the **CLEANUP** activities to remove any created resources.
+**CLEANUP** (5 min): Each team will carry out the **CLEANUP** activities to remove any created resources.
 
 
 !!! info "Team or Individual Exercise"

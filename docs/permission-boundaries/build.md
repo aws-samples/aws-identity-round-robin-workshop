@@ -20,7 +20,7 @@ To setup your environment please expand one of the following drop-downs (dependi
 
 	Region| Deploy
 	------|-----
-	US East 2 (Ohio) | [![Deploy permissions boundary round in us-east-2](./images/deploy-to-aws.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Perm-Bound&templateURL=https://s3-us-west-2.amazonaws.com/sa-security-specialist-workshops-us-west-2/identity-workshop/permissionboundary/identity-workshop-web-admins.yaml)
+	US East 2 (Ohio) | [![Deploy permissions boundary round in us-east-2](./images/deploy-to-aws.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Perm-Bound&templateURL=https://jnv-aws-test-website.s3-ap-southeast-2.amazonaws.com/aws-identity-round-robin-workshop/permission-boundaries/identity-workshop-web-admins.yaml)
 
 	1. Click the **Deploy to AWS** button above.  This will automatically take you to the console to run the template.  
 	2. Click **Next** on the **Select Template** section.
@@ -38,7 +38,7 @@ To setup your environment please expand one of the following drop-downs (dependi
 
 	Region| Deploy
 	------|-----
-	US East 2 (Ohio) | [![Deploy permissions boundary round in us-east-2](./images/deploy-to-aws.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Perm-Bound&templateURL=https://s3-us-west-2.amazonaws.com/sa-security-specialist-workshops-us-west-2/identity-workshop/permissionboundary/identity-workshop-web-admins.yaml)
+	US East 2 (Ohio) | [![Deploy permissions boundary round in us-east-2](./images/deploy-to-aws.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Perm-Bound&templateURL=https://jnv-aws-test-website.s3-ap-southeast-2.amazonaws.com/aws-identity-round-robin-workshop/permission-boundaries/identity-workshop-web-admins.yaml)
 
 	1. Click the **Deploy to AWS** button above.  This will automatically take you to the console to run the template.  
 	2. Click **Next** on the **Select Template** section.
@@ -49,33 +49,40 @@ To setup your environment please expand one of the following drop-downs (dependi
 	This will bring you back to the CloudFormation console. You can refresh the page to see the stack starting to create. Before moving on, make sure the stack is in a **CREATE_COMPLETE**.
 
 !!! Attention
-	As you use the provided IAM policy hints in each task, keep in mind where you need to replace **`<Account_ID>`** with the correct Account ID, where you need to correctly use the resource restrictions and also where you need to change the region. Missing any of these items can result in problems and errors like **"An error occurred (MalformedPolicyDocument) when calling the CreatePolicy operation: The policy failed legacy parsing**".
+	As you use the provided IAM policy hints in each task, keep in mind where you need to replace **`<ACCOUNT_ID>`** with the correct Account ID, where you need to correctly use the resource restrictions and also where you need to change the region. Missing any of these items can result in problems and errors like **"An error occurred (MalformedPolicyDocument) when calling the CreatePolicy operation: The policy failed legacy parsing**".
 
-## Task 0 <small>Create S3 Bucket</small>
-
-1. Browse to the [S3 console](https://console.aws.amazon.com/s3/home).
-2. Click **Buckets** on the left menu and create the S3 bucket named **`web-admins-<Account_ID>-data`**.
-
-	Replace **`<Account_ID>`** with the correct Account ID.
-
-3. Create some objects and/or folders within this bucket.
 
 ## Task 1 <small>Create an IAM user and an IAM policy with permission to create managed policies, IAM roles and Lambda functions</small>
 
-Build an IAM policy so that web admins can create customer managed policies, IAM roles and Lambda functions. They should only be able to edit the policies, roles and lambda functions they create. 
+Build an IAM policy so that web admins can create customer managed policies, IAM roles and Lambda functions. They should only be able to edit the policies, roles and Lambda functions they create. 
 
 
 ### Walk Through
 
-* Browse to the [IAM console](https://console.aws.amazon.com/iam/home).
-* On the first screen you see in the IAM console (which should be the Dashboard) find the **IAM users sign-in link**. Copy that link because you will need the account ID in the URL for the policies and you will need the entire URL when you hand this account to another team for the **VERIFY** phase. 
+1. Browse to the [IAM console](https://console.aws.amazon.com/iam/home).
+2. On the first screen you see in the IAM console (which should be the **Dashboard** left menu), find the **IAM users sign-in link**. Copy this link because you will need the Account ID in the URL for the policies and you will need the entire URL when you hand this account to another team for the **VERIFY** phase.
 ![image1](./images/iam-dashboard.png)
-* Click **Users** on the left menu and create a new IAM user named **`webadmin`**. Check **AWS Management Console access** and then either autogenerate a password or set a custom password. Uncheck **Require password reset**. Attach the AWS managed policies **IAMReadOnlyAccess** & **AWSLambdaReadOnlyAccess** to the user.
+3. Click **Users** on the left menu and create a new IAM user named **`webadmin`**:
+
+	i. *Enable* **AWS Management Console access** and then either *autogenerate* a password or set a *custom* password.
+	
+	ii. *Disable* the **Require password reset** setting.
+	
+	iii. *Attach* the AWS Managed Policies **IAMReadOnlyAccess** and **AWSLambdaReadOnlyAccess** to the user.
 ![image1](./images/create-iam-user.png)
-* Next click **Policies** on the left menu. Create a new IAM policy based on the hint below. Attach this policy to the **`webadmin`** IAM user you just created.
+
+4. Once the **`webadmin`** user has been created, click **Policies** on the left menu.
+
+	i. *Create* a new IAM policy named **`webadmintestpolicy`** that is based on the IAM policy hint below.
+	
+	ii. *Attach* this policy to the **`webadmin`** IAM user you just created.
 
 !!! hint
-	[IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html): You will want to use either naming or pathing resource restrictions in the IAM policy. The question marks "**????**" in the resource element below should be replaced with something that could act as a resource restriction. Examine the existing resources (roles, Lambda functions) to make sure the policy will give access to existing resources owned by the web admins. Replacing the question marks is really the key to this round. 
+	[IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html): You will want to use either *naming* or *pathing* resource restrictions in the IAM policy. The question marks "**????**" in the resource element below should be replaced with something that could act as a resource restriction. Examine the existing resources (roles, Lambda functions) to make sure the policy will give access to existing resources owned by the web admins. Replacing the question marks is really the key to this round.
+	
+	**Remember** that *path* based resource restrictions **cannot** be created using the *AWS Console*, but *naming* based ones can.
+	
+	**Remember** to replace the **`<ACCOUNT_ID>`** placeholder below with the correct Account ID of your AWS account.
 
 ``` json
 {
@@ -111,7 +118,7 @@ Build an IAM policy so that web admins can create customer managed policies, IAM
             "Sid": "LambdaFullAccesswithResourceRestrictions",
             "Effect": "Allow",
             "Action": "lambda:*",
-            "Resource": "arn:aws:lambda:*:<ACCOUNT_ID>:function:????"
+            "Resource": "arn:aws:lambda:us-east-2:<ACCOUNT_ID>:function:????"
         },
         {
             "Sid": "PassRoletoLambda",
@@ -134,11 +141,78 @@ Build an IAM policy so that web admins can create customer managed policies, IAM
 }
 ```
 
-As you complete the following tests, keep in mind the resource restriction you set up in the policy above (**????**). Use the **IAM users sign-in link** you gathered earlier to login: 
+??? info "Example **`webadmintestpolicy`** IAM Policy using Naming (**`web-admins-*`**) Resource Restrictions"
 
-* Login with the **webadmin** IAM user (using a different browser) to verify the user can create a policy. The permissions you set on the policy do not matter at this point. 
-* Also verify you can create a role (while following the resource restriction.) This role should use Lambda as the trusted entity (we will use this role to test the next task) an attach the policy you just created to it. 
-* Finally verify the user can create a lambda function with the role you just created attached.
+	This example IAM policy uses **naming** based resource restrictions to restrict access to resources having a *prefix* of **`web-admins-*`**.
+	
+	**Remember** to replace the **`<ACCOUNT_ID>`** placeholder below with the correct Account ID of your AWS account.
+	
+	``` json
+	{
+	    "Version": "2012-10-17",
+	    "Statement": [
+	        {
+	            "Sid": "CreateCustomerManagedPolicies",
+	            "Effect": "Allow",
+	            "Action": [
+	                "iam:CreatePolicy",
+	                "iam:DeletePolicy",
+	                "iam:CreatePolicyVersion",
+	                "iam:DeletePolicyVersion",
+	                "iam:SetDefaultPolicyVersion"
+	            ],
+	            "Resource": "arn:aws:iam::<ACCOUNT_ID>:policy/web-admins-*"
+	        },
+	        {
+	            "Sid": "CreateRoles",
+	            "Effect": "Allow",
+	            "Action": [
+	                "iam:CreateRole",
+	                "iam:UpdateRole",
+	                "iam:DeleteRole",
+	                "iam:AttachRolePolicy",
+	                "iam:DetachRolePolicy"
+	            ],
+	            "Resource": [
+	                "arn:aws:iam::<ACCOUNT_ID>:role/web-admins-*"
+	            ]
+	        },
+	        {
+	            "Sid": "LambdaFullAccesswithResourceRestrictions",
+	            "Effect": "Allow",
+	            "Action": "lambda:*",
+	            "Resource": "arn:aws:lambda:us-east-2:<ACCOUNT_ID>:function:web-admins-*"
+	        },
+	        {
+	            "Sid": "PassRoletoLambda",
+	            "Effect": "Allow",
+	            "Action": "iam:PassRole",
+	            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/web-admins-*",
+	            "Condition": {
+	                "StringLikeIfExists": {
+	                    "iam:PassedToService": "lambda.amazonaws.com"
+	                }
+	            }
+	        },
+	        {
+	            "Sid": "AdditionalPermissionsforLambda",
+	            "Effect": "Allow",
+	            "Action": [ "kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents" ],
+	            "Resource": "*"
+	        }
+	    ]
+	}
+	```
+
+* Name this IAM policy **`webadmintestpolicy`**.
+ 
+As you complete the following tests, keep in mind the resource restriction you set up in the policy above (i.e. what you replaced **????** with).
+
+Use the **IAM users sign-in link** you gathered earlier to login to a new AWS Console session with the newly created **`webadmin`** IAM user:
+
+1. Login with the **webadmin** IAM user (using a different browser) to verify the user can create an IAM policy. The permissions you set on the policy do not matter at this point.
+2. Also, verify you can create an IAM role (while following the resource restriction). This role should use Lambda as the trusted entity (we will use this role to test the next task) and attach the policy you just created to it.
+3. Finally verify the user can create a Lambda function with the role you just created attached.
 
 !!! question
 	* Why are we using resource restrictions here?
@@ -146,7 +220,9 @@ As you complete the following tests, keep in mind the resource restriction you s
 
 ## Task 2 <small>Create a permissions boundary</small>
 
-The webadmin user can create IAM polices, IAM role and Lambda functions. We now need to limit the permissions of the roles the user create. If not then the web admins could simply create new policies with full admin rights, attach these to the roles, pass these roles to Lambda functions and escalate their permissions (either intentionally or inadvertently). We will use permissions boundaries to limits the effective permissions of the roles. The permissions boundary should allow the following [effective permissions](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) for any role created by the web admins:
+The **webadmin** user can create IAM polices, IAM role and Lambda functions. We now need to limit the permissions of the roles the user can create. If not then the web admins could simply create new policies with full admin rights, attach these to the roles, pass these roles to Lambda functions and escalate their permissions (either intentionally or inadvertently).
+
+We will use permissions boundaries to limits the effective permissions of the roles. The permissions boundary should allow the following [effective permissions](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) for any role created by the web admins:
 
 >	i. Create log groups (but can not overwrite any other log groups)
 
@@ -156,10 +232,14 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
 
 ### Walk Through: 
 
-* Create a new IAM policy that will act as the permissions boundary for the web admins.
+* Create a new IAM policy named **`webadminpermissionboundary`** that will act as the permissions boundary for the web admins.
 
 !!! hint
 	[IAM Identifiers](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html): The question marks **`????`** in the resource element below should be replaced with something that could act as either a naming or pathing resource restriction.
+	
+	**Remember** that *path* based resource restrictions **cannot** be created using the *AWS Console*, but *naming* based ones can.
+	
+	**Remember** to replace the **`<ACCOUNT_ID>`** placeholder below with the correct Account ID of your AWS account.
 
 ``` json
 {
@@ -169,16 +249,16 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Sid": "CreateLogGroup",
             "Effect": "Allow",
             "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:*:<ACCOUNT_ID>:*"
+            "Resource": "arn:aws:logs:us-east-2:<ACCOUNT_ID>:*"
         },
         {
-            "Sid": "CreateLogStreamandEvents",
+            "Sid": "CreateLogStreamAndEvents",
             "Effect": "Allow",
             "Action": [
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "arn:aws:logs:*:<ACCOUNT_ID>:log-group:/aws/lambda/*:*"
+            "Resource": "arn:aws:logs:us-east-2:<ACCOUNT_ID>:log-group:/aws/lambda/*:*"
         },
         {
             "Sid": "AllowedS3GetObject",
@@ -186,13 +266,13 @@ The webadmin user can create IAM polices, IAM role and Lambda functions. We now 
             "Action": [
                 "s3:List*"
             ],
-            "Resource": "arn:aws:s3:::web-admins-<ACCOUNT_ID>-data"
+            "Resource": "arn:aws:s3:::web-admins-<ACCOUNT_ID>-us-east-2-data"
         }
     ]
 }
 ```
 
-Name the policy **`webadminpermissionboundary`**
+* Name the IAM policy **`webadminpermissionboundary`**.
 
 !!! question
 	* What do you attach the permission boundary to?
@@ -203,12 +283,16 @@ Name the policy **`webadminpermissionboundary`**
 
 ### Walk Through
 
-Create a policy that references the permissions boundary we just created. It is recommended that you just create a new policy and use the example below. 
+1. Create a new IAM policy named **`webadminpermissionpolicy`** that references the permissions boundary we just created above. It is recommended that you just create a new policy and use the example below. 
 
-Note that the policy below contains two additional sections (the last two sections) that we did not address in the earlier tasks. The additions are focused on denying the ability to change or delete the permission policy and the permissions boundary. 
+Note that the policy below contains two additional sections (the last two sections) that we did not address in the earlier tasks. The additions are focused on denying the ability to change or delete the permission policy and the permissions boundary.
 
 !!! hint 
 	[permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html): The question marks **`????`** in the resource element below should be replaced with something that could act as either a naming or pathing resource restriction.
+	
+	**Remember** that *path* based resource restrictions **cannot** be created using the *AWS Console*, but *naming* based ones can.
+	
+	**Remember** to replace the **`<ACCOUNT_ID>`** placeholder below with the correct Account ID of your AWS account.
 
 ``` json
 {
@@ -256,7 +340,7 @@ Note that the policy below contains two additional sections (the last two sectio
             "Sid": "LambdaFullAccesswithResourceRestrictions",
             "Effect": "Allow",
             "Action": "lambda:*",
-            "Resource": "arn:aws:lambda:*:<ACCOUNT_ID>:function:????"
+            "Resource": "arn:aws:lambda:us-east-2:<ACCOUNT_ID>:function:????"
         },
         {
             "Sid": "PassRoletoLambda",
@@ -299,10 +383,114 @@ Note that the policy below contains two additional sections (the last two sectio
 }
 ```
 
-* Name the new policy **`webadminpermissionpolicy`** and attach it to the webadmin user. Remove the earlier policy you added during the testing.
-* When you are done the **webadmin** user should have only three policies attached: webadminpermissionpolicy, IAMReadOnlyAccess & AWSLambdaReadOnlyAccess.
-		
-* Again from the browser where you are logged into the console as the **webadmin**, verify the user can create a policy, create a role (attaching both a permission policy and permissions boundary to the role) and finally create a Lambda function into which you will pass that role. Keep in mind the resource restriction. 
+??? info "Example **`webadminpermissionpolicy`** IAM Policy using Naming (**`web-admins-*`**) Resource Restrictions"
+
+	This example IAM policy uses **naming** based resource restrictions to restrict access to resources having a *prefix* of **`web-admins-*`**.
+	
+	**Remember** to replace the **`<ACCOUNT_ID>`** placeholder below with the correct Account ID of your AWS account.
+	
+	``` json
+	{
+	    "Version": "2012-10-17",
+	    "Statement": [
+	        {
+	            "Sid": "CreateCustomerManagedPolicies",
+	            "Effect": "Allow",
+	            "Action": [
+	                "iam:CreatePolicy",
+	                "iam:DeletePolicy",
+	                "iam:CreatePolicyVersion",
+	                "iam:DeletePolicyVersion",
+	                "iam:SetDefaultPolicyVersion"
+	            ],
+	            "Resource": "arn:aws:iam::<ACCOUNT_ID>:policy/web-admins-*"
+	        },
+	        {
+	        	  "Sid": "RoleandPolicyActionswithnoPermissionBoundarySupport",
+	            "Effect": "Allow",
+	            "Action": [
+	            		"iam:UpdateRole",
+	                	"iam:DeleteRole"
+	            ],
+	            "Resource": [
+	                "arn:aws:iam::<ACCOUNT_ID>:role/web-admins-*"
+	            ]
+	        },
+	        {
+	            "Sid": "CreateRoles",
+	            "Effect": "Allow",
+	            "Action": [
+	                "iam:CreateRole",
+	                "iam:AttachRolePolicy",
+	                "iam:DetachRolePolicy"
+	            ],
+	            "Resource": [
+	                "arn:aws:iam::<ACCOUNT_ID>:role/web-admins-*"
+	            ],
+	            "Condition": {"StringEquals": 
+	                { "iam:PermissionsBoundary": "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionboundary" }
+	            }
+	        },
+	        {
+	            "Sid": "LambdaFullAccesswithResourceRestrictions",
+	            "Effect": "Allow",
+	            "Action": "lambda:*",
+	            "Resource": "arn:aws:lambda:us-east-2:<ACCOUNT_ID>:function:web-admins-*"
+	        },
+	        {
+	            "Sid": "PassRoletoLambda",
+	            "Effect": "Allow",
+	            "Action": "iam:PassRole",
+	            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/web-admins-*",
+	            "Condition": {
+	                "StringLikeIfExists": {
+	                    "iam:PassedToService": "lambda.amazonaws.com"
+	                }
+	            }
+	        },
+	        {
+	            "Sid": "AdditionalPermissionsforLambda",
+	            "Effect": "Allow",
+	            "Action": 	[ "kms:ListAliases", "logs:Describe*", "logs:ListTagsLogGroup", "logs:FilterLogEvents", "logs:GetLogEvents" ],
+	            "Resource": "*"
+	        },
+	        {
+	            "Sid": "DenyPermissionBoundaryandPolicyDeleteModify",
+	            "Effect": "Deny",
+	            "Action": [
+	                "iam:CreatePolicyVersion",
+	                "iam:DeletePolicy",
+	                "iam:DeletePolicyVersion",
+	                "iam:SetDefaultPolicyVersion"
+	            ],
+	            "Resource": [
+	                "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionboundary",
+	                "arn:aws:iam::<ACCOUNT_ID>:policy/webadminpermissionpolicy"
+	            ]
+	        },
+	        {
+	            "Sid": "DenyRolePermissionBoundaryDelete",
+	            "Effect": "Deny",
+	            "Action": "iam:DeleteRolePermissionsBoundary",
+	            "Resource": "*"
+	        }
+	    ]
+	}
+	```
+	
+* Name the new policy **`webadminpermissionpolicy`**.
+
+2. Edit the **webadmin** IAM user as follows:
+
+	i. *Attach* the new **`webadminpermissionpolicy`** policy to the **webadmin** user.
+	
+	ii. *Remove* the earlier policy named **`webadmintestpolicy`** from the **webadmin** user that you added during the earilier testing.
+
+3. When you are done the **webadmin** user should have only **three** policies attached:
+
+	**`webadminpermissionpolicy`**, **`IAMReadOnlyAccess`** and **`AWSLambdaReadOnlyAccess`**.
+
+4. Again, from the browser where you are logged into the console as the **webadmin** user, verify the user can create a policy, create a role (attaching both a permission policy and permissions boundary to the role) and finally create a Lambda function into which you will pass that role. Keep in mind the resource restriction. 
 
 !!! question
 	* Why do we add the Deny for DeletePolicy actions regarding the webadminpermissionboundary & webadminpermissionpolicy?
@@ -316,12 +504,12 @@ Now that you have setup the IAM user for the web admins, it's time to pass this 
 
 Here are all of the details you need to pass to another team. If you following the recommended naming conventions than you can use the answers below.  If you were given a form to fill out then enter the info into the form. This needs to be given to another team so they can do the **VERIFY** phase tasks. Your team should collect the **VERIFY** phase form from another team so you can also work through the **VERIFY** tasks. 
 
-* IAM users sign-in link:	**https://Account_ID.signin.aws.amazon.com/console**
-* IAM user name:	**webadmin**
-* IAM user password:	
-* Resource restriction identifier:	
-* permissions boundary name: **webadminpermissionboundary**
-* Permission policy name: **webadminpermissionpolicy**
+* IAM users sign-in link: **https://*`<Account_ID>`*.signin.aws.amazon.com/console**
+* IAM User Name:	**webadmin**
+* IAM User Password:
+* Resource Restriction Identifier: (i.e. **web-admins-**)
+* Permissions Boundary Name: **webadminpermissionboundary**
+* Permission Policy Name: **webadminpermissionpolicy**
 
 !!! tip 
 	Do not hand out this info to the same team that is giving you the info - this way we will end up properly swapping between teams if we have an odd number of teams.
