@@ -6,7 +6,7 @@
 * **Duration**: Each workshop takes 2 hours and can be done separately:
 	* Serverless Identity (2 hours)
 	* Access Delegation (2 hours)
-	* Permissions boundaries (The basic and advanced are 2 hours each)
+	* Permissions boundaries (2 hours)
 * **CSF Functions**: Protect
 * **CAF Components**: Preventive
 * **Prerequisites**: AWS Account, IAM User (with admin permissions)
@@ -15,5 +15,5 @@
 1. [Serverless Identity](./serverless/index.md)
 2. [Access Delegation](./delegation/index.md)
 3. Permissions boundaries
-	* [Permissions boundaries - Basic](./permission-boundaries/index.md) (done via the AWS Console)
-	* [Permissions boundaries - Advanced](./permission-boundaries-advanced/index.md) (done via the CLI) 
+	* [Permissions boundaries - Advanced](./permission-boundaries-advanced/index.md) (done via the CLI)
+	* *Deprecated - [Permissions boundaries - Basic](./permission-boundaries/index.md) (done via the AWS Console)*

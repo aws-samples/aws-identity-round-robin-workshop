@@ -14,13 +14,30 @@
 
 ## Setup Instructions
 
-To setup your environment expand the appropriate choice from the following drop-downs, perform the tasks, and then move on to **Task 1**
+To setup your environment expand the appropriate choice from the following drop-downs, perform the steps, and then move on to **Task 1**
 
-!!! Attention
-	The CloudFormation stack will fail if you have either of the following S3 **Block public access** account options set to **On**: **"Block public access to buckets and objects granted through new access control lists (ACLs)"** or **"Block public and cross-account access to buckets and objects through any public bucket policies"**. You need to set both to **Off** before running the stack. The other options can be set to **On**.
-	![s3blockpublicaccess](./images/s3blockpublicaccess.png)
+??? info "Click here if you are *using your own AWS account*. You will be using your computer to run the commands."
 
-??? info  "Click here if you're at an *AWS event* where the *Event Engine* is being used" 
+	Log in to your account however you would normally. You should use an IAM user or role with admin rights. 
+
+	**CloudFormation:** Launch the CloudFormation stack below to setup the environment:
+
+	Region| Deploy
+	------|-----
+	US East 1 (Virginia) | <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Perm-Bound-Adv&templateURL=https://s3-us-west-2.amazonaws.com/sa-security-specialist-workshops-us-west-2/identity-workshop/permissionboundary/identity-workshop-web-admins-advanced-solo.yaml" target="_blank">![Deploy in us-east-2](./images/deploy-to-aws.png)</a>
+
+	1. Click the **Deploy to AWS** button above.  This will automatically take you to the console to run the template.  
+	2. Click **Next** under the **Create stack** section.
+	3. Click **Next** under the **Specify stack details** section (the stack name will already be filled - you can leave the other options in Parameters at their default settings too)
+	4. Click **Next** under the **Advanced options** section.
+	5. Finally, acknowledge that the template will create IAM resources with custom names under **Capabilities** and click **Create stack**.
+
+	This will bring you back to the CloudFormation console. You can refresh the stack set to see the latest status. Before moving on, make sure the stack finally shows **CREATE_COMPLETE**.
+
+	You will need to configure the <a href="https://aws.amazon.com/cli/" target="_blank"> AWS CLI </a> on your computer with an access key from a principal (IAM user, role, etc) that has at least IAM Full Access and sts:AssumeRole (in order to complete the cleanup at the end, you will also need Lambda Full Access and CloudFormation Full Access.) Then move on to **Task 1**.
+	
+
+??? info  "Click here if you're at an *AWS event* where the *Event Engine* is being used. You will be using Cloud9 to run the commands." 
 
     <p style="font-size:20px;">
       **Step 1** : Retrieve temporary credentials from Event Engine
@@ -49,7 +66,9 @@ To setup your environment expand the appropriate choice from the following drop-
 	8. Now you can run commands from within the Cloud9 IDE using the temporary credentials from Event Engine. If you open a new tab you will need to paste in the credentials again.
 	9. Move on to **Task 1**.
 
-??? info  "Click here if you're at an *AWS event* and *AWS provided an account to you*" 
+
+<!---	
+??? info  "Click here if you're at an *AWS event* and *AWS provided an account to you*. You will be using Cloud9 to run the commands." 
 
 	<p style="font-size:20px;">
       **Step 1**: Login to the console and run the CloudFormation template
@@ -70,6 +89,10 @@ To setup your environment expand the appropriate choice from the following drop-
 	3. Click **Next** on the **Options** section.
 	4. Finally, acknowledge that the template will create IAM roles under **Capabilities** and click **Create**.
 	5. This will bring you back to the CloudFormation console. You can refresh the page to see the stack starting to create. Before moving on, make sure the stack shows **CREATE_COMPLETE**.
+
+	 <p style="font-size:20px;">
+      **Step 2** : Create an IAM user so you can grab the 
+    </p>
 	
     <p style="font-size:20px;">
       **Step 2** : Connect to the AWS Cloud9 IDE
@@ -78,33 +101,15 @@ To setup your environment expand the appropriate choice from the following drop-
 	1. Navigate to the <a href="https://us-east-2.console.aws.amazon.com/cloud9/home" target="_blank">AWS Cloud9</a> console.
 	2. Click on **Open IDE** in the `workshop-environment` under **Your environments**
 	3. Click the **gear** icon in the upper right hand corner to open the Cloud9 Preferences. Scroll down in the settings, click on the **AWS SETTINGS** section and click the button next to **AWS Managed Temporary Credentials** to disable this.
-	4. Now go back to the AWS SSO tab (this should be the first tab you opened for the workshop). Click the **command line or programmatic access**. Click the section under **Option 2** to copy the credentials.
+	4. --- Need steps here ---
 	4. Go back to the Cloud9 environment. Type `aws configure` hit enter. Hit enter until you get to the choice **Default region name** and type in `us-east-2`. Hit enter and then enter again to leave this menu.
 	5. Then create a file in the `~/.aws` directory named `credentials` and paste in the credentials you copied from the SSO login page. Rename the profile to `default` (it will be named something similar to **Account_ID_AdministratorAccess** when you first paste it in)
 	4. Now you can run commands from within the Cloud9 IDE using the temporary credentials from AWS SSO. 
 	4. Move on to **Task 1**.
-
-??? info "Click here if you are *using your own AWS account* (whether you are at an AWS event, a separate event or online)"
-
-	Log in to your account however you would normally. You should use an IAM user or role with admin rights. 
-
-	**CloudFormation:** Launch the CloudFormation stack below to setup the environment:
-
-	Region| Deploy
-	------|-----
-	US East 1 (Virginia) | <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Perm-Bound-Adv&templateURL=https://s3-us-west-2.amazonaws.com/sa-security-specialist-workshops-us-west-2/identity-workshop/permissionboundary/identity-workshop-web-admins-advanced-solo.yaml" target="_blank">![Deploy in us-east-2](./images/deploy-to-aws.png)</a>
-
-	1. Click the **Deploy to AWS** button above.  This will automatically take you to the console to run the template.  
-	2. Click **Next** under the **Create stack** section.
-	3. Click **Next** under the **Specify stack details** section (the stack name will already be filled - you can leave the other options in Parameters at their default settings too)
-	4. Click **Next** under the **Advanced options** section.
-	5. Finally, acknowledge that the template will create IAM resources with custom names under **Capabilities** and click **Create stack**.
-
-	This will bring you back to the CloudFormation console. You can refresh the stack set to see the latest status. Before moving on, make sure the stack finally shows **CREATE_COMPLETE**.
-
-	You will need to configure the <a href="https://aws.amazon.com/cli/" target="_blank"> AWS CLI </a> on your laptop or system of choice with credentials that allow at least IAM admin permissions for the **Build** phase. Then move on to **Task 1**.
+--->
 
 ---
+
 
 ###
 
@@ -114,7 +119,7 @@ To setup your environment expand the appropriate choice from the following drop-
 First you will create an IAM role for the webadmins (initially this role will trust your own AWS account but when you switch accounts with an another team in the **Verify** phase you will configure it to trust the other team's account):
 
 * For many of the steps below you will need your account ID. To get that type in `aws sts get-caller-identity'. The account ID will be the first number listed after **Account**. (If you are using Cloud9, you can do this from a second terminal window so you can refer back to it later when needed.)
-* Use the following JSON to create a file named **`trustpolicy1.json`** for the trust policy (using your preferred text editor): 
+* Use the following JSON to create a file named **`trustpolicy.json`** for the trust policy (using your preferred text editor): 
 ```json
 {
   "Version": "2012-10-17",
@@ -129,7 +134,7 @@ First you will create an IAM role for the webadmins (initially this role will tr
 ```
 * Create the IAM role that will be used by the webadmins:
 ```
-aws iam create-role --role-name webadmins --assume-role-policy-document file://trustpolicy1.json
+aws iam create-role --role-name webadmins --assume-role-policy-document file://trustpolicy.json
 ```
 * Attach the AWSLambdaReadOnlyAccess AWS Managed Policy to the role:
 ```
@@ -137,11 +142,11 @@ aws iam attach-role-policy --policy arn:aws:iam::aws:policy/AWSLambdaReadOnlyAcc
 ```
 
 
-## Task 2 <small>Create the permissions boundary for the webadmins</small>
+## Task 2 <small>Create the permissions boundary the webadmins will use when creating roles</small>
 
 Next you will create the policy that will be used as the permissions boundary.  The permissions boundary should only allow the following actions: Create log groups, create log streams, put logs and list the files in the webadmins folder of the bucket that starts with `"shared-logging-"` and ends in `"-data"`:
 
-* Use the following JSON to create a file named **`boundarydoc.json`** for the permissions boundary policy:
+* Use the following JSON to create a file named **`permissionsboundary.json`** for the permissions boundary policy:
 	
 ``` json
 {
@@ -163,7 +168,7 @@ Next you will create the policy that will be used as the permissions boundary.  
             "Resource": "arn:aws:logs:us-east-1:<ACCOUNT_ID>:log-group:/aws/lambda/*:*"
         },
         {
-            "Sid": "AllowedS3GetObject",
+            "Sid": "AllowS3GetObject",
             "Effect": "Allow",
             "Action": [
                 "s3:List*"
@@ -174,28 +179,42 @@ Next you will create the policy that will be used as the permissions boundary.  
                     "s3:prefix": "webadmins"
              		}
         		}
-        }		
+        },
+        {
+    		  "Sid": "OtherPermissionsNeeded",
+    		  "Effect": "Allow",
+    		  "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+   			  ],
+    		  "Resource": "*",
+    		  "Condition": {
+        			"StringEquals": {
+            		"aws:RequestedRegion": "us-east-1"
+        			}
+        		}
+        }
     ]
 }
 ```
 * Create the policy:
 ```
-aws iam create-policy --policy-name webadminspermissionsboundary --policy-document file://boundarydoc.json
+aws iam create-policy --policy-name webadminspermissionsboundary --policy-document file://permissionsboundary.json
 ```
 
 !!! question
-	* What will the webadmins attach the permissions boundary to?
-	* How does a permissions boundary differ from a standard IAM policy?
-	* How could you test the permissions boundary at this point?
+	* To what object will the webadmins attach the permissions boundary?
+	* How does a permissions boundary differ from an identity-based policy?
 
-## Task 3 <small>Create the permission policy for the webadmins</small>
+## Task 3 <small>Create the identity-based policy for the webadmins</small>
 
 !!! hint 
 	**IMPORTANT!!!!** - The question marks **`????`** in the policy below should be replaced with something that could act as part of a resource restriction.  The end result is that you will have a pathing requirement for the roles and policies. Replacing the **`????`** is one of the key challenges in this workshop and probably the most confusing part. Talk to a facilitator if you have issues with this. 
 
 Next you will create the policy that will be attached to the webadmins role.
 
-* Use the following JSON to create a file named **`policydoc.json`** for the permission policy:
+* Use the following JSON to create a file named **`identitybasedpolicy.json`** for the permission policy:
 
 ``` json
 {
@@ -288,7 +307,7 @@ Next you will create the policy that will be attached to the webadmins role.
  
 * Create a policy named `webadminspermissionpolicy`:
 ```
-aws iam create-policy --policy-name webadminspermissionpolicy --policy-document file://policydoc.json
+aws iam create-policy --policy-name webadminspermissionpolicy --policy-document file://identitybasedpolicy.json
 ```
 * Attach the policy to the webadmins role
 ```
@@ -298,22 +317,18 @@ When you are done the **webadmins** role should have these two policies attached
 
 !!! question "Questions"
 
-	* Why were there some blocks above in the policy that used the permissions boundary condition and some that did not?
+	* Why were there some blocks in the policy above that used the permissions boundary condition and some that did not?
 	* Why are we using pathing here?
 	* There are two ways of doing resource restrictions: naming and pathing. Which option allows you to create policies using both the AWS Console and CLI?
-	* Why do we add the Deny for DeletePolicy actions regarding the webadminspermissionsboundary & webadminspermissionpolicy?
+	* Why do we add the Deny for DeletePolicy actions regarding the webadminspermissionsboundary & webadminspermissionpolicy? Is this actually needed?
 	
 ## Task 4 <small>Test the webadmins permissions</small>
 	
-It's time to check your work and make sure the webadmins are set up properly. You need to test the following actions as the webadmins:
-
-1. Create an IAM policy
-2. Create an IAM role (and attach that policy) 
-3. Create a Lambda function (and attach that role)
+It's time to check your work and make sure the webadmins are set up properly. 
 
 The instructions for how to test the setup can be found in the **[VERIFY phase](./verify.md)**. The **VERIFY** phase assumes you are checking another team's setup but for your own testing this will be just done in your own account. You'll need to keep that in mind because some of the **VERIFY** phase instructions assume you are doing this cross account so you'll need to adjust some of the commands. 
 
-When you have verified your work is correct, move on to the next task (**Task 5**) which will involve actually exchanging information so another team can verify your work. 
+Come back to the **BUILD** phase after you have verified your work is correct, move on to **Task 5**.
 
 ## Task 5 <small>Gather info needed for the **VERIFY** phase</small>
 

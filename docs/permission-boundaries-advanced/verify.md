@@ -33,14 +33,14 @@ source_profile = default
 
 !!! Attention
     <p style="font-size:16px;">
-      As in the Build phase, keep in mind where you need to add the Account ID, correctly use pathing and change the region specified if needed (although if you are taking this as part of an AWS event, just use the already specified us-east-1.) Also you will need to use the --profile parameter for all of the commands in the following tasks.
+      Please keep in mind where to add the AWS Account ID, correctly use pathing and change the region specified if needed (although if you are taking this as part of an AWS event, just use the already specified us-east-1.)
     </p>
 
 ## Task 1 <small>Create a policy</small>
 	
 First you will create a permission policy which just needs to allow log file creation and s3:ListBucket. You are in a hurry though, like many developers, and give the role full S3 permissions. The policy you create here will later be attached to the role you create in Task 2 which will then be passed to a Lambda function you will create in **Task 3**.
 
-* Use the following JSON to create a file named **`verifypolicydoc.json`**: 
+* Use the following JSON to create a file named **`verifypolicy.json`**: 
 ```json
 {
   "Version": "2012-10-17",
@@ -60,9 +60,9 @@ First you will create a permission policy which just needs to allow log file cre
 ```
 * Create the policy (**there is a key parameter missing from the command below. Check the <a href="https://docs.aws.amazon.com/cli/latest/reference/" target="_blank"> AWS CLI documentation to determine the missing parameter. </a> **)
 ```
-aws iam create-policy --policy-name NAME_OF_POLICY --policy-document file://verifypolicydoc.json --profile webadmins
+aws iam create-policy --policy-name NAME_OF_POLICY --policy-document file://verifypolicy.json --profile webadmins
 ```
-<!-- `aws iam create-policy --policy-name NAME_OF_POLICY --path /webadmins/ --policy-document file://verifypolicydoc.json` -->
+<!-- `aws iam create-policy --policy-name NAME_OF_POLICY --path /webadmins/ --policy-document file://verifypolicy.json` -->
 
 ## Task 2 <small>Create a role</small>
 
@@ -95,7 +95,7 @@ aws iam attach-role-policy --policy-arn arn:aws:iam::<ACCOUNT_ID_FROM_OTHER_TEAM
 
 Finally, you will create a **Node.js 8.10** Lambda function using the sample code below and pass the IAM role you just created:
  
-* Create a file named **`index.js`** using the code below. Replace `"SHARED_LOGGING_BUCKET_NAME"` with the name of bucket that begins with `"shared-logging-"` and ends in `"-data"`. In order to get the bucket name, just run `aws s3 ls --profile webadmins`.)
+* Create a file named **`index.js`** using the code below. Replace `"SHARED_LOGGING_BUCKET_NAME"` with the name of bucket that begins with `"shared-logging-"` and ends in `"-data"`. Also replace `"PREFIX_FROM_PERMISSIONS_BOUNDARY"` with the prefix the permissions boundary requires for that bucket.  In order to find the bucket name, just run `aws s3 ls --profile webadmins`. In order to find the prefix, examine the permissions boundary policy from the **BUILD** phase. 
 
 ``` node
 const AWS = require('aws-sdk');
@@ -104,7 +104,7 @@ const s3 = new AWS.S3();
 exports.handler = async (event) => {
   console.log('Loading function');
   const allKeys = [];
-  await getKeys({ Bucket: 'SHARED_LOGGING_BUCKET_NAME' , Prefix: 'webadmins'}, allKeys);
+  await getKeys({ Bucket: 'SHARED_LOGGING_BUCKET_NAME' , Prefix: 'PREFIX_FROM_PERMISSIONS_BOUNDARY'}, allKeys);
   return allKeys;
 };
 
@@ -139,21 +139,47 @@ Congratulations!
 
 ## Task 4 <small>Cleanup</small>
 
-To cleanup you need to delete the CloudFormation stack named `Perm-Bound-Adv` (this will also remove the Cloud9 stack) and the IAM resources you created. Run the following commands:
+To cleanup you need to delete the CloudFormation stack named `Perm-Bound-Adv` (this will also remove the Cloud9 stack if that was used in the workshop) and the IAM resources you created. Run these commands using the IAM user or role you used to do the **BUILD** phase.
 
-**Delete the webadmins role**:
+Resources created in the **VERIFY** phase
+
+* Detach policy from the role created in the **VERIFY** phase:
+```
+aws iam detach-role-policy --role-name NAME_OF_VERIFY_ROLE --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/webadmins/NAME_OF_VERIFY_POLICY
+```
+* Delete policy created in the **VERIFY** phase:
+```
+aws iam delete-policy --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/webadmins/NAME_OF_VERIFY_POLICY
+```
+* Delete role created in **VERIFY** phase:
+```
+aws iam delete-role --role-name verifyrole
+```
+* Delete the Lambda function created in **VERIFY** phase:
+```
+aws lambda delete-function --function-name verifyfunction --region us-east-1
+```
+
+Resources created in the **BUILD** phase
+
+* Detach the two policies from the webadmins role created in the **BUILD** phase:
+```
+aws iam detach-role-policy --role-name webadmins --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/webadminspermissionpolicy
+aws iam detach-role-policy --role-name webadmins --policy-arn arn:aws:iam::aws:policy/AWSLambdaReadOnlyAccess 
+```
+* Delete the webadmins role created in the **BUILD** phase:
 ```
 aws iam delete-role --role-name webadmins
 ```
-**Delete the permission policy**:
+* Delete the permission policy created in the **BUILD** phase:
 ```
 aws iam delete-policy --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/webadminspermissionpolicy
 ```
-**Delete the permissions boundary**:
+* Delete the permissions boundary created in the **BUILD** phase:
 ```
 aws iam delete-policy --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/webadminspermissionsboundary
 ```
-**Delete the CloudFormation stack**:
+* Delete the CloudFormation stack created in the **BUILD** phase:
 ```
-aws cloudformation delete-stack --stack-name Perm-Bound-Adv
+aws cloudformation delete-stack --stack-name Perm-Bound-Adv --region us-east-1
 ```

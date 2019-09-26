@@ -13,14 +13,6 @@ Parameters:
       - identity-wksp-permissionsboundary
     Description: Prefix of resources created for this workshop.  
 
-#  InstanceType: 
-#    Type: String
-#    Default: t2.micro
-#    AllowedValues: 
-#      - t2.micro
-#      - t2.medium
-#    Description: Pick a instance type for the Cloud9 environment 
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -31,13 +23,7 @@ Metadata:
           - ResourcePrefix
           - TeamName
 
-Mappings:
-
-  Application: 
-    bucket: 
-      "name": "sa-security-specialist-workshops-us-west-2"
-    prefix:
-      "key": "identity-workshop/permissionboundary/logging-bucket/"
+# Mappings:
 
 Resources:
   
@@ -57,8 +43,6 @@ Resources:
     Type: "Custom::S3Objects"
     Properties:
       ServiceToken: !GetAtt WebsiteContentLambda.Arn
-      SourceBucket: !FindInMap [Application, bucket, name]
-      SourcePrefix: !FindInMap [Application, prefix, key]
       Bucket: !Ref WebsiteBucket
 
   WebsiteContentLambdaRole:
@@ -91,19 +75,6 @@ Resources:
                   - "logs:PutLogEvents"
                 Resource: "*"
               -
-                Sid: SourceBucketReadAccess
-                Effect: Allow
-                Action:
-                  - "s3:ListBucket"
-                  - "s3:GetObject"
-                Resource:
-                  - Fn::Join:
-                    - ''
-                    - ['arn:aws:s3:::', !FindInMap [Application, bucket, name]]
-                  - Fn::Join:
-                    - ''
-                    - ['arn:aws:s3:::', !FindInMap [Application, bucket, name], '/', !FindInMap [Application, prefix, key],'*']
-              -
                 Sid: DestBucketWriteAccess
                 Effect: Allow
                 Action:
@@ -128,13 +99,12 @@ Resources:
           - [!Ref ResourcePrefix, 'content']
       Description: Copies objects from a source S3 bucket to a destination S3 bucket.
       Handler: index.handler
-      Runtime: python2.7
+      Runtime: python3.7
       Role: !GetAtt WebsiteContentLambdaRole.Arn
-      Timeout: 120
+      Timeout: 30
       Code:
         ZipFile: |
           from botocore.exceptions import ClientError
-          import os
           import json
           import cfnresponse
           import boto3
@@ -152,8 +122,6 @@ Resources:
             logger.info("Received event: %s" % json.dumps(event))
             
             # Set Variables
-            source_bucket = event['ResourceProperties']['SourceBucket']
-            source_prefix = event['ResourceProperties'].get('SourcePrefix') or ''
             bucket = event['ResourceProperties']['Bucket']
             prefix = event['ResourceProperties'].get('Prefix') or ''
 
@@ -161,18 +129,36 @@ Resources:
             result = cfnresponse.SUCCESS
 
             try:
-              
               # Create or Update Event
               if event['RequestType'] == 'Create' or event['RequestType'] == 'Update':
-                paginator = s3.get_paginator('list_objects_v2')
-                page_iterator = paginator.paginate(Bucket=source_bucket, Prefix=source_prefix)
-                
-                for key in {x['Key'] for page in page_iterator for x in page['Contents']}:
-                  dest_key = os.path.join(prefix, os.path.relpath(key, source_prefix))
-                  if not key.endswith('/'):
-                    print 'copy {} to {}'.format(key, dest_key)
-                    s3.copy_object(CopySource={'Bucket': source_bucket, 'Key': key}, Bucket=bucket, Key = dest_key, ACL='public-read')
 
+                # Create files locally and copy them to s3
+                f= open("/tmp/you-should-NOT-SEE-this-file-appadmins_logging1","w+")
+                response = s3.upload_file("/tmp/you-should-NOT-SEE-this-file-appadmins_logging1", bucket, "appadmins/you-should-NOT-SEE-this-file-appadmins_logging1")
+
+                f= open("/tmp/you-should-NOT-SEE-this-file-appadmins_logging2","w+")
+                response = s3.upload_file("/tmp/you-should-NOT-SEE-this-file-appadmins_logging2", bucket, "appadmins/you-should-NOT-SEE-this-file-appadmins_logging2")
+
+                f= open("/tmp/you-should-NOT-SEE-this-file-appadmins_logging3","w+")
+                response = s3.upload_file("/tmp/you-should-NOT-SEE-this-file-appadmins_logging3", bucket, "appadmins/you-should-NOT-SEE-this-file-appadmins_logging3")
+                
+                f= open("/tmp/you-should-NOT-SEE-this-file-appadmins_logging4","w+")
+                response = s3.upload_file("/tmp/you-should-NOT-SEE-this-file-appadmins_logging4", bucket, "appadmins/you-should-NOT-SEE-this-file-appadmins_logging4")
+                
+        
+                f= open("/tmp/you-should-SEE-this-file--webadmins_logging1","w+")
+                response = s3.upload_file("/tmp/you-should-SEE-this-file--webadmins_logging1", bucket, "webadmins/you-should-SEE-this-file--webadmins_logging1")
+
+                f= open("/tmp/you-should-SEE-this-file--webadmins_logging2","w+")
+                response = s3.upload_file("/tmp/you-should-SEE-this-file--webadmins_logging2", bucket, "webadmins/you-should-SEE-this-file--webadmins_logging2")
+
+                f= open("/tmp/you-should-SEE-this-file--webadmins_logging3","w+")
+                response = s3.upload_file("/tmp/you-should-SEE-this-file--webadmins_logging3", bucket, "webadmins/you-should-SEE-this-file--webadmins_logging3")
+
+                f= open("/tmp/you-should-SEE-this-file--webadmins_logging4","w+")
+                response = s3.upload_file("/tmp/you-should-SEE-this-file--webadmins_logging4", bucket, "webadmins/you-should-SEE-this-file--webadmins_logging4")
+
+                #  Send signal to cloudformation
                 result = cfnresponse.SUCCESS
 
               # Delete Event
@@ -182,11 +168,11 @@ Resources:
 
                 objects = [{'Key': x['Key']} for page in page_iterator for x in page['Contents']]
                 s3.delete_objects(Bucket=bucket, Delete={'Objects': objects})
-
+                #  Send signal to cloudformation
                 result = cfnresponse.SUCCESS
             except ClientError as e:
               logger.error('Error: %s', e)
-              
+              #  Send signal to cloudformation
               result = cfnresponse.FAILED
 
             cfnresponse.send(event, context, result, {})
