@@ -152,7 +152,7 @@ zip lambdafunction.zip index.js
 ```
 * Create a Lambda function
 ```
-aws lambda create-function --function-name verifyfunction --runtime nodejs10.x --role arn:aws:iam::<ACCOUNT_ID_FROM_OTHER_TEAM>:role/webadmins/NAME_OF_ROLE --handler index.handler --region us-east-1 --zip-file fileb://lambdafunction.zip --profile webadmins
+aws lambda create-function --function-name verifyfunction --runtime nodejs14.x --role arn:aws:iam::<ACCOUNT_ID_FROM_OTHER_TEAM>:role/webadmins/NAME_OF_ROLE --handler index.handler --region us-east-1 --zip-file fileb://lambdafunction.zip --profile webadmins
 ```
 * Invoke the Lambda function
 ```
